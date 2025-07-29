@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>New Tab</title>
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+        @font-face {
+            font-family: 'HRC';
+            src: url('fonts/HRC.woff2') format('woff2'),
+                url('fonts/HRC.woff') format('woff'),
+                url('fonts/HRC.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            justify-content: center;
+        }
+
+        video.bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        #overlay {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-top: -70px;
+            margin-bottom: -235px;
+        }
+
+        .floating-logo {
+            width: 280px;
+            height: auto;
+            pointer-events: none;
+        }
+
+        .shortcut-wrapper,
+        .add-shortcut {
+            flex: 0 0 auto;
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-top: 180px;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .search-container form {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            width: 650px;
+            color: white;
+            backdrop-filter: blur(18px);
+            font-size: 18px;
+            max-width: 90%;
+            transition: border-radius 0.3s ease-in-out;
+        }
+
+        .search-container input {
+            padding: 18px 24px;
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            backdrop-filter: blur(8px);
+            background: transparent;
+            color: white;
+            font-size: 18px;
+        }
+
+        .search-container input::placeholder {
+            color: white;
+        }
+
+        .search-container button {
+            padding: 0 20px;
+            border: none;
+            backdrop-filter: blur(8px);
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .search-container button i {
+            font-size: 20px;
+            color: white;
+            filter: brightness(0) invert(1);
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 650px;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            z-index: 99;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, border-radius 0.3s ease-in-out;
+            transform-origin: top;
+        }
+
+        .search-container form.suggestions-active-form {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom: none;
+        }
+
+        .search-suggestions.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            border-top: none;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 24px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .suggestion-item i {
+            font-size: 18px;
+            margin-right: 10px;
+            opacity: 0.7;
+        }
+
+        .suggestion-item span {
+            flex-grow: 1;
+            font-size: 16px;
+        }
+
+        .suggestion-item .bx-x {
+            font-size: 18px;
+            margin-left: 10px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .suggestion-item .bx-x:hover {
+            opacity: 1;
+        }
+
+        .search-suggestions.active+form {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .shortcuts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            max-width: 90%;
+        }
+
+        .shortcuts a {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .shortcuts a:hover {
+            background: rgba(90, 90, 90, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .shortcuts img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            object-fit: contain;
+            image-rendering: auto;
+        }
+
+        .shortcuts span {
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .add-shortcut {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            background: rgba(90, 90, 90, 0.6) !important;
+            border-radius: 24px;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            backdrop-filter: blur(2px);
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .add-shortcut:hover {
+            background: rgba(90, 90, 90, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .shortcut-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .shortcut-wrapper a {
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(2px);
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .shortcut-wrapper a:hover {
+            background: rgba(90, 90, 90, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .menu-dots {
+            position: absolute;
+            top: 10px;
+            right: 3px;
+            font-size: 15px;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            cursor: pointer;
+            z-index: 2;
+            padding: 2px;
+        }
+
+        .shortcut-wrapper:hover .menu-dots {
+            opacity: 0.6;
+            transform: translateY(-4px);
+        }
+
+        #shortcutModal,
+        #settingsModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .sound-options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sound-option-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: background 0.3s ease, border 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            flex-wrap: wrap;
+        }
+
+        .sound-option-container:hover {
+            background: rgba(255, 255, 255, 0.288);
+        }
+
+        .sound-option-text {
+            flex-grow: 1;
+            font-size: 16px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .sound-option-icon {
+            font-size: 24px;
+            color: white;
+            margin-left: 10px;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sound-option-container.expanded {
+            height: auto;
+            padding-bottom: 5px;
+            transition: all 0.4s ease-out;
+        }
+
+        .sound-option-icon.rotated {
+            transform: rotate(90deg);
+        }
+
+        .volume-slider-container {
+            width: 100%;
+            padding: 2px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease-in-out, max-height 0.4s ease-out;
+            pointer-events: none;
+        }
+
+        .sound-option-container.expanded .volume-slider-container {
+            opacity: 1;
+            max-height: 50px;
+            pointer-events: all;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #4CAF50;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+            flex-grow: 1;
+            transform: translateY(5px);
+        }
+
+        .volume-slider:hover {
+            opacity: 1;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .volume-icon {
+            font-size: 20px;
+            color: white;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        .blur-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(8px);
+            z-index: 0;
+        }
+
+        .modal-box {
+            background: rgba(31, 31, 31, 0.6);
+            backdrop-filter: blur(15px);
+            padding: 24px;
+            border-radius: 14px;
+            width: 320px;
+            color: white;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #settingsModal .modal-box {
+            height: 340px;
+            width: 380px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 23px;
+            box-sizing: border-box;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        #settingsModal .modal-box::-webkit-scrollbar {
+            width: 11px;
+            background-color: transparent;
+        }
+
+        #settingsModal .modal-box::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        #settingsModal .modal-box::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #settingsModal .modal-box:hover::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        #settingsModal .modal-box:active::-webkit-scrollbar-thumb {
+            background-color: rgba(126, 125, 125, 0.5);
+        }
+
+        #settingsModal .modal-box::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(126, 125, 125, 0.5);
+        }
+
+
+        .modal-box h3 {
+            margin: 0 0 25px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-box input {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: none;
+            background: #2b2b2b;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .modal-box input::placeholder {
+            color: #aaa;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .modal-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        #saveBtn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        #deleteBtn {
+            background: #f44336;
+            color: white;
+            display: none;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 25px;
+            right: 14px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #fff;
+            opacity: 0.6;
+        }
+
+        .close-modal-btn:hover {
+            opacity: 1;
+            color: #f44336;
+        }
+
+        .add-shortcut-row {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        .add-shortcut i {
+            font-size: 32px;
+            color: gray;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+        }
+
+        #sidePanel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100%;
+            background: rgba(90, 90, 90, 0.6);
+            backdrop-filter: blur(18px);
+            transition: right 0.4s ease;
+            z-index: 10000;
+            display: flex;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            flex-direction: column;
+            padding: 24px 20px 24px 24px;
+            color: white;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        #sidePanel::-webkit-scrollbar {
+            display: none;
+        }
+
+
+        #sidePanel.active {
+            right: 0;
+        }
+
+        .corner-buttons-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .corner-button {
+            position: fixed;
+            top: 90%;
+            right: 0px;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+
+            transition: background 0.3s, border 0.3s, backdrop-filter 0.3s, right 0.4s ease, transform 0.4s ease;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            z-index: 10001;
+        }
+
+        #sidePanel.active+.corner-button {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .corner-button i {
+            font-size: 38px;
+            color: rgb(32, 31, 31);
+            transition: color 0.3s;
+        }
+
+        .corner-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .corner-button:hover i {
+            color: white;
+        }
+
+        .music-toggle-button {
+            position: fixed;
+            top: 637px;
+            right: 1540px;
+            transform: translateY(50%);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+
+            transition: background 0.3s, border 0.3s, backdrop-filter 0.3s, right 0.4s ease, transform 0.4s ease;
+            background: rgba(143, 142, 142, 0.6);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            z-index: 10001;
+        }
+
+        .music-toggle-button:hover {
+            background: rgba(143, 142, 142, 0.6);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .music-toggle-button i {
+            font-size: 32px;
+            color: rgba(49, 48, 48, 0.87);
+            transition: color 0.3s;
+        }
+
+        .music-toggle-button:hover i {
+            color: white;
+        }
+
+        .bx-spin {
+            animation: spin 3s infinite linear;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .sidePanelContent {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding-right: 20px;
+            box-sizing: border-box;
+        }
+
+        .divider-line {
+            width: 100%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.3);
+            margin-top: 27px;
+            margin-bottom: 7px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 10px;
+            padding-right: 5px;
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .settings-icon {
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .settings-icon:hover {
+            opacity: 1;
+        }
+
+        .sidePanelContent>.wallpaper-item {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 5px;
+            cursor: default;
+        }
+
+        .sidePanelContent>.wallpaper-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .wallpaper-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-weight: 500;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .settings-divider {
+            width: 100%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.3);
+            margin: 18px 0;
+        }
+
+        .panel-title {
+            text-align: center;
+            font-family: 'HRC', sans-serif;
+            font-size: 60px;
+            font-weight: 400;
+            margin-top: -20px;
+            margin-bottom: 3px;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .panel-intro {
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+            margin-bottom: 2px;
+            line-height: 1.5;
+        }
+
+        .panel-theme-count {
+            text-align: center;
+            font-size: 14px;
+            color: rgb(71, 69, 69);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .more-themes-heading {
+            text-align: left;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .themes-slots {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            padding-right: 20px;
+        }
+
+        .themes-slots .wallpaper-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
+            padding-bottom: 1px;
+            height: auto;
+        }
+
+        .themes-slots .wallpaper-item:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .themes-slots .wallpaper-item img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .wallpaper-text {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            margin-top: 11px;
+            padding: 0 5px;
+            box-sizing: border-box;
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .other-sound-options-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 5px;
+        }
+
+        .general-sound-divider {
+            width: 100%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.3);
+            margin: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <video autoplay loop muted class="bg">
+        <source src="wallpapers/default_animated.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div id="overlay">
+        <div class="logo-container">
+            <img src="icons/logo.png" alt="Logo" class="floating-logo" />
+        </div>
+
+        <div class="search-container">
+            <form action="https://www.google.com/search" method="GET" target="_blank">
+                <input type="text" name="q" placeholder="Search the Web" id="searchInput" autocomplete="off" />
+                <button><i class='bx bx-search-alt'></i></button>
+            </form>
+            <div id="searchSuggestions" class="search-suggestions">
+            </div>
+        </div>
+
+        <div class="shortcuts">
+
+        </div>
+        <div class="add-shortcut-row" style="margin-top: 25px;">
+            <a class="add-shortcut" href="#">
+                <i class='bx bx-plus'></i>
+            </a>
+        </div>
+    </div>
+    <div id="shortcutModal">
+        <div class="blur-background"></div>
+        <div class="modal-box">
+            <h3 id="modalTitle">Add Shortcut</h3>
+            <input id="shortcutName" placeholder="Website Name" />
+            <input id="shortcutURL" placeholder="Website URL" />
+            <div class="modal-actions">
+                <button id="saveBtn">Save</button>
+                <button id="deleteBtn">Delete</button>
+            </div>
+            <i class="bx bx-x close-modal-btn" id="closeShortcutModalBtn"></i>
+        </div>
+    </div>
+
+    <div id="settingsModal">
+        <div class="blur-background"></div>
+        <div class="modal-box">
+            <h3 style="text-decoration: underline; text-underline-offset: 3px;">Sound Settings :-</h3>
+
+            <div class="sound-options-group">
+                <div class="sound-option-container" id="generalSoundOption">
+                    <span class="sound-option-text">General</span>
+                    <i class='bx bx-chevron-right sound-option-icon' id="generalSoundArrow"></i>
+                    <div class="volume-slider-container">
+                        <i class='bx bx-volume-low volume-icon'></i>
+                        <input type="range" min="0" max="100" value="50" class="volume-slider" id="generalVolumeSlider">
+                        <i class='bx bx-volume-full volume-icon'></i>
+                    </div>
+                </div>
+
+                <div class="general-sound-divider"></div>
+
+                <div class="other-sound-options-wrapper">
+                    <div class="sound-option-container" id="tabOpenSoundOption">
+                        <span class="sound-option-text">Tab Open</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="tabOpenSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="tabOpenVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="tabCloseSoundOption">
+                        <span class="sound-option-text">Tab Close</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="tabCloseSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="tabCloseVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="tabDragSoundOption">
+                        <span class="sound-option-text">Tab Drag</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="tabDragSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="tabDragVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="tabMuteSoundOption">
+                        <span class="sound-option-text">Tab Mute</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="tabMuteSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="tabMuteVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="tabUnmuteSoundOption">
+                        <span class="sound-option-text">Tab Unmute</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="tabUnmuteSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="tabUnmuteVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="downloadStartSoundOption">
+                        <span class="sound-option-text">Download Start</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="downloadStartSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="downloadStartVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="downloadCompleteSoundOption">
+                        <span class="sound-option-text">Download Complete</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="downloadCompleteSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="downloadCompleteVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+                    <div class="sound-option-container" id="bookmarkPageSoundOption">
+                        <span class="sound-option-text">Bookmark Page</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="bookmarkPageSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="bookmarkPageVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="clickSoundOption">
+                        <span class="sound-option-text">Click</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="clickSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="clickVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="scrollSoundOption">
+                        <span class="sound-option-text">Scroll</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="scrollSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="scrollVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+
+                    <div class="sound-option-container" id="hoverSoundOption">
+                        <span class="sound-option-text">Hover</span>
+                        <i class='bx bx-chevron-right sound-option-icon' id="hoverSoundArrow"></i>
+                        <div class="volume-slider-container">
+                            <i class='bx bx-volume-low volume-icon'></i>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider"
+                                id="hoverVolumeSlider">
+                            <i class='bx bx-volume-full volume-icon'></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <i class="bx bx-x close-modal-btn" id="closeSettingsModalBtn"></i>
+        </div>
+    </div>
+
+    <div id="limitNotification" style="
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.514);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    z-index: 99999;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+">
+        You have to remove 1 existing shortcut to add another
+    </div>
+
+    <div id="sidePanel">
+        <div class="sidePanelContent">
+            <h1 class="panel-title">FOXISYNC</h1>
+            <p class="panel-intro">The Extension to change your entire Chrome experience, with varieties of sounds on
+                different actions, and custom tab themes.</p>
+            <p class="panel-theme-count">We currently have 10 themes, but in the future there will be more themes.</p>
+
+            <div class="panel-header">
+                <h2>Minecraft Theme</h2> <i class='bx bx-cog settings-icon'></i>
+            </div>
+            <div class="wallpaper-item">
+                <img src="preview/default_image.png" alt="Minecraft Theme Preview">
+                <div class="wallpaper-overlay">Selected Theme</div>
+            </div>
+            <div class="divider-line"></div>
+
+            <h3 class="more-themes-heading">More themes :-</h3>
+            <div class="themes-slots">
+                <div class="wallpaper-item">
+                    <img src="preview/eren_aot.png" alt="Eren Yeager Theme">
+                    <h3 class="wallpaper-text">Eren Yeager</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="corner-buttons-container">
+        <div class="music-toggle-button" id="musicToggle">
+            <i class='bx  bx-music-alt'></i>
+        </div>
+
+        <div class="corner-button" id="corner-button">
+            <i class='bx bx-arrow-to-left-stroke'></i>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" src="sounds/default_music1.mp3" loop></audio>
+
+
+    <script src="newtab.js"></script>
+</body>
+
+</html>
