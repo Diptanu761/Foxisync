@@ -1,1 +1,1 @@
-"Hey, I have a question — is it okay if I create a new GitHub repository for this project to keep track of commits? My brother suggested that having a proper commit history could help reviewers see the progress and avoid any doubts about the project's authenticity.
+It is an chrome extension and i guess it will helpful for everyone. I will update the description later..
