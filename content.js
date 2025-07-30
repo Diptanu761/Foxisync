@@ -121,4 +121,3 @@ if (!chrome.runtime?.id) {
         playSound("error");
     }, true);
 }
-

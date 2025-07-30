@@ -73,21 +73,21 @@
             position: relative;
             display: flex;
             justify-content: center;
-            margin-top: 180px;
+            margin-top: 140px;
             margin-bottom: 40px;
             width: 100%;
         }
 
         .search-container form {
             display: flex;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(134, 134, 134, 0.404);
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 10px;
             width: 650px;
             color: white;
-            backdrop-filter: blur(18px);
+            backdrop-filter: blur(13px);
             font-size: 18px;
             max-width: 90%;
             transition: border-radius 0.3s ease-in-out;
@@ -97,8 +97,8 @@
             padding: 18px 24px;
             flex-grow: 1;
             border: none;
+            background: rgba(134, 134, 134, 0.404);
             outline: none;
-            backdrop-filter: blur(8px);
             background: transparent;
             color: white;
             font-size: 18px;
@@ -106,12 +106,13 @@
 
         .search-container input::placeholder {
             color: white;
+
         }
 
         .search-container button {
             padding: 0 20px;
+            background: rgba(134, 134, 134, 0.404);
             border: none;
-            backdrop-filter: blur(8px);
             background: transparent;
             cursor: pointer;
         }
@@ -129,8 +130,8 @@
             transform: translateX(-50%);
             width: 650px;
             max-width: 90%;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(18px);
+            background: rgba(134, 134, 134, 0.404);
+            backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 0 0 10px 10px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
@@ -206,7 +207,7 @@
         .shortcuts a {
             width: 100px;
             height: 100px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(134, 134, 134, 0.404);
             border-radius: 16px;
             display: flex;
             flex-direction: column;
@@ -225,7 +226,7 @@
         .shortcuts img {
             width: 40px;
             height: 40px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             border-radius: 8px;
             object-fit: contain;
             image-rendering: auto;
@@ -266,11 +267,10 @@
         .shortcut-wrapper a {
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(134, 134, 134, 0.404);
             border-radius: 16px;
             display: flex;
             flex-direction: column;
-            backdrop-filter: blur(2px);
             align-items: center;
             justify-content: center;
             color: white;
@@ -728,8 +728,8 @@
             width: 100%;
             height: 1px;
             background-color: rgba(255, 255, 255, 0.3);
-            margin-top: 27px;
-            margin-bottom: 7px;
+            margin-top: 14px;
+            margin-bottom: 5px;
         }
 
         .panel-header {
@@ -820,7 +820,7 @@
         .panel-theme-count {
             text-align: center;
             font-size: 14px;
-            color: rgb(71, 69, 69);
+            color: rgb(204, 204, 204);
             font-style: italic;
             margin-bottom: 20px;
         }
@@ -836,7 +836,7 @@
         .themes-slots {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 25px;
             padding-right: 20px;
         }
 
@@ -891,20 +891,61 @@
             background-color: rgba(255, 255, 255, 0.3);
             margin: 15px 0;
         }
+
+        #selectedThemeContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        #selectedThemeContainer .wallpaper-item {
+            width: 100%;
+            box-sizing: border-box;
+            height: 120px;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: default;
+            margin-bottom: 0;
+        }
+
+        #selectedThemeContainer .wallpaper-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        #selectedThemeContainer .wallpaper-item .wallpaper-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-weight: 500;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        #selectedThemeContainer .panel-header {
+            width: 100%;
+            box-sizing: border-box;
+            padding-right: 5px;
+        }
     </style>
 </head>
 
 <body>
-    <video autoplay loop muted class="bg">
-        <source src="wallpapers/default_animated.mp4" type="video/mp4">
+    <video autoplay loop muted class="bg" id="background-video">
+        <source src="videos/default_background.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
     <div id="overlay">
-        <div class="logo-container">
-            <img src="icons/logo.png" alt="Logo" class="floating-logo" />
-        </div>
-
         <div class="search-container">
             <form action="https://www.google.com/search" method="GET" target="_blank">
                 <input type="text" name="q" placeholder="Search the Web" id="searchInput" autocomplete="off" />
@@ -1107,18 +1148,20 @@
                 different actions, and custom tab themes.</p>
             <p class="panel-theme-count">We currently have 10 themes, but in the future there will be more themes.</p>
 
-            <div class="panel-header">
-                <h2>Minecraft Theme</h2> <i class='bx bx-cog settings-icon'></i>
-            </div>
-            <div class="wallpaper-item">
-                <img src="preview/default_image.png" alt="Minecraft Theme Preview">
-                <div class="wallpaper-overlay">Selected Theme</div>
+            <div id="selectedThemeContainer">
+                <div class="panel-header">
+                    <h2 id="selectedThemeName">Minecraft Theme</h2> <i class='bx bx-cog settings-icon'></i>
+                </div>
+                <div class="wallpaper-item" id="selectedThemePreview">
+                    <img src="preview/default_image.png" alt="Minecraft Theme Preview">
+                    <div class="wallpaper-overlay">Selected Theme</div>
+                </div>
             </div>
             <div class="divider-line"></div>
 
             <h3 class="more-themes-heading">More themes :-</h3>
             <div class="themes-slots">
-                <div class="wallpaper-item">
+                <div class="wallpaper-item" data-theme-name="Eren Yeager" data-preview-src="preview/eren_aot.png">
                     <img src="preview/eren_aot.png" alt="Eren Yeager Theme">
                     <h3 class="wallpaper-text">Eren Yeager</h3>
                 </div>

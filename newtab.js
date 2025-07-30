@@ -87,15 +87,15 @@ document.addEventListener("DOMContentLoaded", () => {
             chrome.storage.local.set({ volumes: volumes }, () => {
                 console.log(`🔊 Volume for ${soundName} set to: ${volume}`);
                 chrome.runtime.sendMessage({
-                    action: "updateVolume", 
+                    action: "updateVolume",
                     soundName: soundName,
                     volume: volume
                 });
 
-                chrome.tabs.query({}, function(tabs) {
-                    tabs.forEach(function(tab) {
+                chrome.tabs.query({}, function (tabs) {
+                    tabs.forEach(function (tab) {
                         chrome.tabs.sendMessage(tab.id, {
-                            action: "volumeChanged", 
+                            action: "volumeChanged",
                             soundName: soundName,
                             volume: volume
                         }).catch(e => {
@@ -465,4 +465,128 @@ document.addEventListener("DOMContentLoaded", () => {
     if (closeSettingsModalBtn) closeSettingsModalBtn.addEventListener("click", closeSettingsModal);
 
     renderShortcuts();
+
+    const selectedThemeNameElement = document.getElementById("selectedThemeName");
+    const selectedThemePreviewItem = document.getElementById("selectedThemePreview");
+    const selectedThemePreviewImage = selectedThemePreviewItem ? selectedThemePreviewItem.querySelector("img") : null;
+    const selectedThemeOverlay = selectedThemePreviewItem ? selectedThemePreviewItem.querySelector(".wallpaper-overlay") : null;
+    const themesSlotsContainer = document.querySelector(".themes-slots");
+    const backgroundVideo = document.getElementById("background-video");
+
+    let currentSelectedTheme = {
+        name: "Minecraft Theme",
+        preview: "preview/default_image.png",
+        video: "videos/default_background.mp4"
+    };
+
+    const allThemes = [
+        { name: "Minecraft Theme", preview: "preview/default_image.png", video: "videos/default_background.mp4" },
+        { name: "Eren Yeager", preview: "preview/eren_aot.png", video: "videos/eren_aot_bg.mp4" },
+        { name: "Levi Ackerman", preview: "preview/levi_aot.png", video: "videos/levi_aot_bg.mp4" },
+        { name: "Mikasa Ackerman", preview: "preview/mikasa_aot.png", video: "videos/mikasa_aot_bg.mp4" },
+        { name: "Tsunade Senju", preview: "preview/tsunade.png", video: "videos/tsunade.mp4" },
+        { name: "Uzumaki Naruto", preview: "preview/naruto.png", video: "videos/naruto.mp4" },
+        { name: "Sasuke Uchiha", preview: "preview/sasuke.png", video: "videos/sasuke.mp4" },
+        { name: "Naruto & His Friends", preview: "preview/narandfriend.png", video: "videos/narandfriend.mp4" },
+        { name: "Kakashi Hatake", preview: "preview/kakashi.png", video: "videos/kakashi.mp4" },
+        { name: "Itachi & Kisame", preview: "preview/itachi_kisame.png", video: "videos/itachi_kisame.mp4" },
+        { name: "Obito Uchiha", preview: "preview/obito.png", video: "videos/obito.mp4" },
+        { name: "Itachi Uchiha", preview: "preview/itachi.png", video: "videos/itachi.mp4" },
+        { name: "Madara Uchiha", preview: "preview/madara.png", video: "videos/madara.mp4" }
+    ];
+
+    function updateSelectedThemeDisplay(themeName, previewSrc, videoSrc) {
+        if (selectedThemeNameElement) {
+            selectedThemeNameElement.textContent = themeName;
+        }
+        if (selectedThemePreviewImage) {
+            selectedThemePreviewImage.src = previewSrc;
+            selectedThemePreviewImage.alt = `${themeName} Preview`;
+        }
+        if (backgroundVideo && videoSrc) {
+            backgroundVideo.src = videoSrc;
+            backgroundVideo.load();
+            backgroundVideo.play();
+        }
+    }
+
+    function renderMoreThemes(otherThemesData) {
+        if (!themesSlotsContainer) return;
+
+        themesSlotsContainer.innerHTML = '';
+
+        otherThemesData.forEach(theme => {
+            if (theme.name === currentSelectedTheme.name && theme.preview === currentSelectedTheme.preview) {
+                return;
+            }
+
+            const themeItem = document.createElement("div");
+            themeItem.className = "wallpaper-item";
+            themeItem.setAttribute("data-theme-name", theme.name);
+            themeItem.setAttribute("data-preview-src", theme.preview);
+            themeItem.setAttribute("data-video-src", theme.video);
+            themeItem.innerHTML = `
+            <img src="${theme.preview}" alt="${theme.name} Theme">
+            <h3 class="wallpaper-text">${theme.name}</h3>
+        `;
+            themesSlotsContainer.appendChild(themeItem);
+        });
+    }
+
+    function initializeThemes() {
+        chrome.storage.local.get(['selectedTheme'], (data) => {
+            if (data.selectedTheme) {
+                currentSelectedTheme = data.selectedTheme;
+            } else {
+                const defaultTheme = allThemes.find(theme => theme.name === "Minecraft Theme");
+                if (defaultTheme) {
+                    currentSelectedTheme = defaultTheme;
+                }
+                chrome.storage.local.set({ selectedTheme: currentSelectedTheme });
+            }
+            updateSelectedThemeDisplay(currentSelectedTheme.name, currentSelectedTheme.preview, currentSelectedTheme.video);
+
+            const otherThemesForDisplay = allThemes.filter(theme =>
+                theme.name !== currentSelectedTheme.name || theme.preview !== currentSelectedTheme.preview
+            );
+            renderMoreThemes(otherThemesForDisplay);
+        });
+    }
+
+    if (themesSlotsContainer) {
+        themesSlotsContainer.addEventListener("click", (event) => {
+            const clickedThemeItem = event.target.closest(".wallpaper-item");
+
+            if (clickedThemeItem &&
+                clickedThemeItem.parentElement === themesSlotsContainer &&
+                (clickedThemeItem.getAttribute("data-theme-name") !== currentSelectedTheme.name ||
+                    clickedThemeItem.getAttribute("data-preview-src") !== currentSelectedTheme.preview)) {
+
+                const newThemeName = clickedThemeItem.getAttribute("data-theme-name");
+                const newThemePreviewSrc = clickedThemeItem.getAttribute("data-preview-src");
+                const newThemeVideoSrc = clickedThemeItem.getAttribute("data-video-src");
+
+                currentSelectedTheme = {
+                    name: newThemeName,
+                    preview: newThemePreviewSrc,
+                    video: newThemeVideoSrc
+                };
+
+                updateSelectedThemeDisplay(currentSelectedTheme.name, currentSelectedTheme.preview, currentSelectedTheme.video);
+
+                let updatedOtherThemes = allThemes.filter(theme =>
+                    (theme.name !== currentSelectedTheme.name || theme.preview !== currentSelectedTheme.preview)
+                );
+
+                chrome.storage.local.set({
+                    selectedTheme: currentSelectedTheme,
+                    otherThemes: updatedOtherThemes
+                }, () => {
+                    renderMoreThemes(updatedOtherThemes);
+                });
+            }
+        });
+    }
+
+    initializeThemes();
 });
