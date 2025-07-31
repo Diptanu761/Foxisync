@@ -430,29 +430,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isMusicPlaying = localStorage.getItem('isMusicPlaying') === 'true';
 
-    if (isMusicPlaying) {
-        backgroundMusic.play().catch(e => console.error("Music autoplay failed:", e));
-        musicIcon.classList.remove('bx-music-alt');
-        musicIcon.classList.add('bx-music-alt', 'bx-spin');
-    } else {
-        backgroundMusic.pause();
-        musicIcon.classList.remove('bx-music-alt', 'bx-spin');
-        musicIcon.classList.add('bx-music-alt');
-    }
-
-    musicToggle.addEventListener('click', () => {
-        if (isMusicPlaying) {
+    function playInitialMusic() {
+        if (isMusicPlaying && backgroundMusic) {
+            backgroundMusic.play().catch(e => {
+                console.warn("Music autoplay blocked or failed:", e);
+            });
+            musicIcon.classList.remove('bx-music-alt');
+            musicIcon.classList.add('bx-music-alt', 'bx-spin');
+        } else if (backgroundMusic) {
             backgroundMusic.pause();
             musicIcon.classList.remove('bx-music-alt', 'bx-spin');
             musicIcon.classList.add('bx-music-alt');
-            isMusicPlaying = false;
-        } else {
-            backgroundMusic.play().catch(e => console.error("Music playback failed:", e));
-            musicIcon.classList.remove('bx-music-alt');
-            musicIcon.classList.add('bx-music-alt', 'bx-spin');
-            isMusicPlaying = true;
         }
-        localStorage.setItem('isMusicPlaying', isMusicPlaying);
+    }
+
+
+    musicToggle.addEventListener('click', () => {
+        if (backgroundMusic) {
+            if (isMusicPlaying) {
+                backgroundMusic.pause();
+                musicIcon.classList.remove('bx-music-alt', 'bx-spin');
+                musicIcon.classList.add('bx-music-alt');
+                isMusicPlaying = false;
+            } else {
+                backgroundMusic.play().catch(e => console.error("Music playback failed:", e));
+                musicIcon.classList.remove('bx-music-alt');
+                musicIcon.classList.add('bx-music-alt', 'bx-spin');
+                isMusicPlaying = true;
+            }
+            localStorage.setItem('isMusicPlaying', isMusicPlaying);
+        }
     });
 
     if (settingsIcon) {
@@ -476,26 +483,28 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentSelectedTheme = {
         name: "Minecraft Theme",
         preview: "preview/default_image.png",
-        video: "videos/default_background.mp4"
+        video: "wallpapers/default_background.mp4",
+        music: "sounds/default_music1.mp3"
     };
 
     const allThemes = [
-        { name: "Minecraft Theme", preview: "preview/default_image.png", video: "videos/default_background.mp4" },
-        { name: "Eren Yeager", preview: "preview/eren_aot.png", video: "videos/eren_aot_bg.mp4" },
-        { name: "Levi Ackerman", preview: "preview/levi_aot.png", video: "videos/levi_aot_bg.mp4" },
-        { name: "Mikasa Ackerman", preview: "preview/mikasa_aot.png", video: "videos/mikasa_aot_bg.mp4" },
-        { name: "Tsunade Senju", preview: "preview/tsunade.png", video: "videos/tsunade.mp4" },
-        { name: "Uzumaki Naruto", preview: "preview/naruto.png", video: "videos/naruto.mp4" },
-        { name: "Sasuke Uchiha", preview: "preview/sasuke.png", video: "videos/sasuke.mp4" },
-        { name: "Naruto & His Friends", preview: "preview/narandfriend.png", video: "videos/narandfriend.mp4" },
-        { name: "Kakashi Hatake", preview: "preview/kakashi.png", video: "videos/kakashi.mp4" },
-        { name: "Itachi & Kisame", preview: "preview/itachi_kisame.png", video: "videos/itachi_kisame.mp4" },
-        { name: "Obito Uchiha", preview: "preview/obito.png", video: "videos/obito.mp4" },
-        { name: "Itachi Uchiha", preview: "preview/itachi.png", video: "videos/itachi.mp4" },
-        { name: "Madara Uchiha", preview: "preview/madara.png", video: "videos/madara.mp4" }
+        { name: "Minecraft Theme", preview: "preview/default_image.png", video: "wallpapers/default_background.mp4", music: "sounds/default_music1.mp3" },
+        { name: "Eren Yeager", preview: "preview/eren_aot.png", video: "wallpapers/eren_aot_bg.mp4", music: "sounds/eren_aot_music.mp3" },
+        { name: "Levi Ackerman", preview: "preview/levi_aot.png", video: "wallpapers/levi_aot_bg.mp4", music: "sounds/levi_aot_music.mp3" },
+        { name: "Mikasa Ackerman", preview: "preview/mikasa_aot.png", video: "wallpapers/mikasa_aot_bg.mp4", music: "sounds/mikasa_aot_music.mp3" },
+        { name: "Tsunade Senju", preview: "preview/tsunade.png", video: "wallpapers/tsunade.mp4", music: "sounds/tsunade_music.mp3" },
+        { name: "Uzumaki Naruto", preview: "preview/naruto.png", video: "wallpapers/naruto.mp4", music: "sounds/naruto_music.mp3" },
+        { name: "Sasuke Uchiha", preview: "preview/sasuke.png", video: "wallpapers/sasuke.mp4", music: "sounds/sasuke_music.mp3" },
+        { name: "Naruto & His Friends", preview: "preview/narandfriend.png", video: "wallpapers/narandfriend.mp4", music: "sounds/narandfriend_music.mp3" },
+        { name: "Kakashi Hatake", preview: "preview/kakashi.png", video: "wallpapers/kakashi.mp4", music: "sounds/kakashi_music.mp3" },
+        { name: "Itachi & Kisame", preview: "preview/itachi_kisame.png", video: "wallpapers/itachi_kisame.mp4", music: "sounds/itachi_kisame_music.mp3" },
+        { name: "Obito Uchiha", preview: "preview/obito.png", video: "wallpapers/obito.mp4", music: "sounds/obito_music.mp3" },
+        { name: "Itachi Uchiha", preview: "preview/itachi.png", video: "wallpapers/itachi.mp4", music: "sounds/itachi_music.mp3" },
+        { name: "Madara Uchiha", preview: "preview/madara.png", video: "wallpapers/madara.mp4", music: "sounds/madara_music.mp3" },
+        { name: "Valley Of The End", preview: "preview/valley.png", video: "wallpapers/valley.mp4", music: "sounds/valley_music.mp3" }
     ];
 
-    function updateSelectedThemeDisplay(themeName, previewSrc, videoSrc) {
+    function updateSelectedThemeDisplay(themeName, previewSrc, videoSrc, musicSrc) {
         if (selectedThemeNameElement) {
             selectedThemeNameElement.textContent = themeName;
         }
@@ -507,6 +516,15 @@ document.addEventListener("DOMContentLoaded", () => {
             backgroundVideo.src = videoSrc;
             backgroundVideo.load();
             backgroundVideo.play();
+        }
+        if (backgroundMusic && musicSrc) {
+            if (isMusicPlaying || backgroundMusic.src !== new URL(musicSrc, window.location.href).href) {
+                backgroundMusic.src = musicSrc;
+                backgroundMusic.load();
+                if (isMusicPlaying) {
+                    backgroundMusic.play().catch(e => console.error("Music playback failed on theme change:", e));
+                }
+            }
         }
     }
 
@@ -525,10 +543,11 @@ document.addEventListener("DOMContentLoaded", () => {
             themeItem.setAttribute("data-theme-name", theme.name);
             themeItem.setAttribute("data-preview-src", theme.preview);
             themeItem.setAttribute("data-video-src", theme.video);
+            themeItem.setAttribute("data-music-src", theme.music);
             themeItem.innerHTML = `
-            <img src="${theme.preview}" alt="${theme.name} Theme">
-            <h3 class="wallpaper-text">${theme.name}</h3>
-        `;
+                <img src="${theme.preview}" alt="${theme.name} Theme">
+                <h3 class="wallpaper-text">${theme.name}</h3>
+            `;
             themesSlotsContainer.appendChild(themeItem);
         });
     }
@@ -544,12 +563,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 chrome.storage.local.set({ selectedTheme: currentSelectedTheme });
             }
-            updateSelectedThemeDisplay(currentSelectedTheme.name, currentSelectedTheme.preview, currentSelectedTheme.video);
+
+            updateSelectedThemeDisplay(currentSelectedTheme.name, currentSelectedTheme.preview, currentSelectedTheme.video, currentSelectedTheme.music);
 
             const otherThemesForDisplay = allThemes.filter(theme =>
                 theme.name !== currentSelectedTheme.name || theme.preview !== currentSelectedTheme.preview
             );
             renderMoreThemes(otherThemesForDisplay);
+
+            playInitialMusic();
         });
     }
 
@@ -560,19 +582,21 @@ document.addEventListener("DOMContentLoaded", () => {
             if (clickedThemeItem &&
                 clickedThemeItem.parentElement === themesSlotsContainer &&
                 (clickedThemeItem.getAttribute("data-theme-name") !== currentSelectedTheme.name ||
-                    clickedThemeItem.getAttribute("data-preview-src") !== currentSelectedTheme.preview)) {
+                 clickedThemeItem.getAttribute("data-preview-src") !== currentSelectedTheme.preview)) {
 
                 const newThemeName = clickedThemeItem.getAttribute("data-theme-name");
                 const newThemePreviewSrc = clickedThemeItem.getAttribute("data-preview-src");
                 const newThemeVideoSrc = clickedThemeItem.getAttribute("data-video-src");
+                const newThemeMusicSrc = clickedThemeItem.getAttribute("data-music-src");
 
                 currentSelectedTheme = {
                     name: newThemeName,
                     preview: newThemePreviewSrc,
-                    video: newThemeVideoSrc
+                    video: newThemeVideoSrc,
+                    music: newThemeMusicSrc
                 };
 
-                updateSelectedThemeDisplay(currentSelectedTheme.name, currentSelectedTheme.preview, currentSelectedTheme.video);
+                updateSelectedThemeDisplay(currentSelectedTheme.name, currentSelectedTheme.preview, currentSelectedTheme.video, currentSelectedTheme.music);
 
                 let updatedOtherThemes = allThemes.filter(theme =>
                     (theme.name !== currentSelectedTheme.name || theme.preview !== currentSelectedTheme.preview)
