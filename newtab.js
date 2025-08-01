@@ -28,13 +28,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "download_start": { option: document.getElementById("downloadStartSoundOption"), arrow: document.getElementById("downloadStartSoundArrow"), slider: document.getElementById("downloadStartVolumeSlider"), soundName: "download_start" },
         "download_complete": { option: document.getElementById("downloadCompleteSoundOption"), arrow: document.getElementById("downloadCompleteSoundArrow"), slider: document.getElementById("downloadCompleteVolumeSlider"), soundName: "download_complete" },
         "bookmark_added": { option: document.getElementById("bookmarkPageSoundOption"), arrow: document.getElementById("bookmarkPageSoundArrow"), slider: document.getElementById("bookmarkPageVolumeSlider"), soundName: "bookmark_added" },
-        "download_failed": { option: null, arrow: null, slider: null, soundName: "download_failed" },
         "error": { option: null, arrow: null, slider: null, soundName: "error" },
         "click": { option: document.getElementById("clickSoundOption"), arrow: document.getElementById("clickSoundArrow"), slider: document.getElementById("clickVolumeSlider"), soundName: "click" },
-        "scroll": { option: document.getElementById("scrollSoundOption"), arrow: document.getElementById("scrollSoundArrow"), slider: document.getElementById("scrollVolumeSlider"), soundName: "scroll" },
-        "hover": { option: document.getElementById("hoverSoundOption"), arrow: document.getElementById("hoverSoundArrow"), slider: document.getElementById("hoverVolumeSlider"), soundName: "hover" },
-        "form_submit": { option: null, arrow: null, slider: null, soundName: "form_submit" },
-        "search_focus": { option: null, arrow: null, slider: null, soundName: "search_focus" },
+        "scroll": { option: document.getElementById("scrollSoundOption"), arrow: document.getElementById("scrollSoundArrow"), slider: document.getElementById("scrollVolumeSlider"), soundName: "scroll" }
     };
 
     function setupSoundOption(optionData) {
@@ -401,10 +397,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const iconElement = cornerIcon.querySelector('i');
             if (sidePanel.classList.contains("active")) {
                 cornerIcon.style.right = `${panelWidth + -1}px`;
-                if (iconElement) iconElement.className = 'bx bx-arrow-to-right-stroke';
+                if (iconElement) iconElement.className = 'bx bx-arrow-to-right';
             } else {
                 cornerIcon.style.right = '0px';
-                if (iconElement) iconElement.className = 'bx bx-arrow-to-left-stroke';
+                if (iconElement) iconElement.className = 'bx bx-arrow-to-left';
             }
         });
 
@@ -419,7 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 sidePanel.classList.remove("active");
                 cornerIcon.style.right = '0px';
                 const iconElement = cornerIcon.querySelector('i');
-                if (iconElement) iconElement.className = 'bx bx-arrow-to-left-stroke';
+                if (iconElement) iconElement.className = 'bx bx-arrow-to-left';
             }
         });
     }
@@ -449,13 +445,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (backgroundMusic) {
             if (isMusicPlaying) {
                 backgroundMusic.pause();
-                musicIcon.classList.remove('bx-music-alt', 'bx-spin');
-                musicIcon.classList.add('bx-music-alt');
+                musicIcon.classList.remove('bx-music', 'bx-spin');
+                musicIcon.classList.add('bx-music');
                 isMusicPlaying = false;
             } else {
                 backgroundMusic.play().catch(e => console.error("Music playback failed:", e));
-                musicIcon.classList.remove('bx-music-alt');
-                musicIcon.classList.add('bx-music-alt', 'bx-spin');
+                musicIcon.classList.remove('bx-music');
+                musicIcon.classList.add('bx-music', 'bx-spin');
                 isMusicPlaying = true;
             }
             localStorage.setItem('isMusicPlaying', isMusicPlaying);
@@ -497,12 +493,29 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Sasuke Uchiha", preview: "preview/sasuke.png", video: "wallpapers/sasuke.mp4", music: "sounds/sasuke_music.mp3" },
         { name: "Naruto & His Friends", preview: "preview/narandfriend.png", video: "wallpapers/narandfriend.mp4", music: "sounds/narandfriend_music.mp3" },
         { name: "Kakashi Hatake", preview: "preview/kakashi.png", video: "wallpapers/kakashi.mp4", music: "sounds/kakashi_music.mp3" },
-        { name: "Itachi & Kisame", preview: "preview/itachi_kisame.png", video: "wallpapers/itachi_kisame.mp4", music: "sounds/itachi_kisame_music.mp3" },
+        { name: "Itachi & Kisame", preview: "preview/itachi_kisame.png", video: "wallpapers/itachi_kisame.mp4", music: "sounds/itachi_kisamemusic.mp3" },
+        { name: "Valley Of The End", preview: "preview/valley.png", video: "wallpapers/valley.mp4", music: "sounds/valley_music.mp3" },
         { name: "Obito Uchiha", preview: "preview/obito.png", video: "wallpapers/obito.mp4", music: "sounds/obito_music.mp3" },
         { name: "Itachi Uchiha", preview: "preview/itachi.png", video: "wallpapers/itachi.mp4", music: "sounds/itachi_music.mp3" },
         { name: "Madara Uchiha", preview: "preview/madara.png", video: "wallpapers/madara.mp4", music: "sounds/madara_music.mp3" },
-        { name: "Valley Of The End", preview: "preview/valley.png", video: "wallpapers/valley.mp4", music: "sounds/valley_music.mp3" }
     ];
+
+    const themeSoundPaths = {
+        "Minecraft Theme": "sounds/minecraft_sounds/",
+        "Eren Yeager": "sounds/aot_sounds/",
+        "Levi Ackerman": "sounds/aot_sounds/",
+        "Mikasa Ackerman": "sounds/aot_sounds/",
+        "Tsunade Senju": "sounds/naruto_sounds/",
+        "Uzumaki Naruto": "sounds/naruto_sounds/",
+        "Sasuke Uchiha": "sounds/naruto_sounds/",
+        "Naruto & His Friends": "sounds/naruto_sounds/",
+        "Kakashi Hatake": "sounds/naruto_sounds/",
+        "Itachi & Kisame": "sounds/naruto_sounds/",
+        "Valley Of The End": "sounds/naruto_sounds/",
+        "Obito Uchiha": "sounds/naruto_sounds/",
+        "Itachi & Kisame": "sounds/naruto_sounds/",
+        "Itachi Uchiha": "sounds/naruto_sounds/"
+    };
 
     function updateSelectedThemeDisplay(themeName, previewSrc, videoSrc, musicSrc) {
         if (selectedThemeNameElement) {
@@ -526,6 +539,50 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         }
+    }
+
+    function updateSoundTheme(themeName) {
+        const soundFolder = themeSoundPaths[themeName];
+        if (!soundFolder) {
+            console.error(`No sound folder found for theme: ${themeName}`);
+            return;
+        }
+
+        const newSoundPaths = {
+            "tab_open": soundFolder + "tab_open.mp3",
+            "tab_close": soundFolder + "tab_close.mp3",
+            "tab_dragging": soundFolder + "tab_dragging.mp3",
+            "tab_muted": soundFolder + "tab_muted.mp3",
+            "tab_unmuted": soundFolder + "tab_unmuted.mp3",
+            "download_start": soundFolder + "download_start.mp3",
+            "download_complete": soundFolder + "download_complete.mp3",
+            "bookmark_added": soundFolder + "bookmark_added.mp3",
+            "click": soundFolder + "click.mp3",
+            "scroll": soundFolder + "scroll.mp3",
+            "silent": soundFolder + "silent.mp3"
+        };
+
+        chrome.storage.local.set({ soundPaths: newSoundPaths }, () => {
+            console.log("Updated sound paths in storage:", newSoundPaths);
+            
+            chrome.runtime.sendMessage({
+                action: "themeChanged",
+                soundPaths: newSoundPaths
+            });
+            
+            chrome.tabs.query({}, (tabs) => {
+                tabs.forEach(tab => {
+                    chrome.tabs.sendMessage(tab.id, {
+                        action: "themeChanged",
+                        soundPaths: newSoundPaths
+                    }).catch(err => {
+                        if (!err.message.includes("Receiving end does not exist")) {
+                            console.error("Error sending message to tab:", err);
+                        }
+                    });
+                });
+            });
+        });
     }
 
     function renderMoreThemes(otherThemesData) {
@@ -565,6 +622,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             updateSelectedThemeDisplay(currentSelectedTheme.name, currentSelectedTheme.preview, currentSelectedTheme.video, currentSelectedTheme.music);
+
+            if (!data.soundPaths) {
+                updateSoundTheme(currentSelectedTheme.name);
+            }
 
             const otherThemesForDisplay = allThemes.filter(theme =>
                 theme.name !== currentSelectedTheme.name || theme.preview !== currentSelectedTheme.preview
@@ -608,6 +669,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }, () => {
                     renderMoreThemes(updatedOtherThemes);
                 });
+
+                updateSoundTheme(newThemeName);
             }
         });
     }

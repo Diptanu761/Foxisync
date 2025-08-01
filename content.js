@@ -14,9 +14,10 @@ if (!chrome.runtime?.id) {
 
     let scrollCooldown = false;
     let lastScrollTime = 0;
-    const SCROLL_DELAY = 300; 
+    const SCROLL_DELAY = 300;
 
     let currentVolumes = {};
+    let currentSoundPaths = {};
 
     function fetchAndUpdateVolumes() {
         if (chrome.runtime?.id) {
@@ -26,17 +27,30 @@ if (!chrome.runtime?.id) {
         }
     }
 
+    function fetchAndUpdateSoundPaths() {
+        if (chrome.runtime?.id) {
+            chrome.storage.local.get(["soundPaths"], (data) => {
+                currentSoundPaths = data.soundPaths || {};
+                console.log("Content script loaded with sound paths:", currentSoundPaths);
+            });
+        }
+    }
+
     fetchAndUpdateVolumes();
+    fetchAndUpdateSoundPaths();
 
     chrome.runtime.onMessage.addListener((message) => {
         if (message.action === "volumeChanged") {
             currentVolumes[message.soundName] = message.volume;
-            if (audio.src.includes(`sounds/${message.soundName}.mp3`)) {
+            if (currentSoundPaths[message.soundName] && audio.src.includes(currentSoundPaths[message.soundName])) {
                 audio.volume = message.volume / 100;
             }
         }
         if (message.action === "downloadFailed") {
-            playSound("error");
+        }
+        if (message.action === "themeChanged") {
+            currentSoundPaths = message.soundPaths;
+            console.log("Content script updated with new sound paths:", currentSoundPaths);
         }
     });
 
@@ -50,8 +64,14 @@ if (!chrome.runtime?.id) {
 
         if (chrome.runtime?.id) {
             const volume = currentVolumes[soundName] !== undefined ? currentVolumes[soundName] / 100 : 0.5;
+            const soundPath = currentSoundPaths[soundName];
 
-            audio.src = chrome.runtime.getURL(`sounds/${soundName}.mp3`);
+            if (!soundPath) {
+                console.warn(`No sound path found for sound: ${soundName}`);
+                return;
+            }
+
+            audio.src = chrome.runtime.getURL(soundPath);
             audio.volume = volume;
 
             audio.play().catch((e) => {
@@ -73,51 +93,7 @@ if (!chrome.runtime?.id) {
         }
     });
 
-    document.addEventListener("submit", () => {
-        chrome.runtime.sendMessage({ action: "playSound", sound: "form_submit" })
-    });
-
     document.addEventListener("click", () => playSound("click"));
-    document.addEventListener("click", (event) => {
-        const element = event.target;
-        if (
-            (element.tagName === "INPUT" && (element.type === "text" || element.type === "search")) ||
-            element.tagName === "TEXTAREA" ||
-            element.isContentEditable
-        ) {
-            playSound("search_focus");
-        }
-    });
-    document.addEventListener("click", (event) => {
-        if (event.target.tagName === "BUTTON" && event.target.disabled) {
-            playSound("error");
-        }
-    });
-
-    document.addEventListener("mouseover", (event) => {
-        const element = event.target;
-
-        if (
-            element.tagName === "A" ||
-            element.tagName === "BUTTON" ||
-            (element.hasAttribute("role") && element.getAttribute("role") === "button") ||
-            element.hasAttribute("data-clickable")
-        ) {
-            playSound("hover");
-        }
-    });
     document.addEventListener("contextmenu", (event) => {
     });
-
-    document.addEventListener("keydown", (event) => {
-        const blockedShortcuts = ["s", "u", "i", "j"];
-        if (event.ctrlKey && blockedShortcuts.includes(event.key.toLowerCase())) {
-            event.preventDefault();
-            playSound("error");
-        }
-    });
-
-    document.addEventListener("invalid", (event) => {
-        playSound("error");
-    }, true);
 }
