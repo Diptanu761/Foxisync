@@ -5,58 +5,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foxisync</title>
-
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-
-        @font-face {
-            font-family: 'HRC';
-            src: url('fonts/HRC.woff2') format('woff2'),
-                url('fonts/HRC.woff') format('woff'),
-                url('fonts/HRC.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
+        :root {
+            --color-primary-orange: #FF6600;
+            --color-dark-charcoal: #2A2A2A;
+            --color-light-grey: #F5F5F5;
+            --color-medium-grey: #6B7280;
+            --color-dark-text: #333333;
         }
 
         body {
             font-family: 'Inter', sans-serif;
+            background: var(--color-light-grey);
+            color: var(--color-dark-text);
+            width: 380px;
+            padding: 0 15px 15px 15px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; 
+            overflow-x: hidden;
+            margin: 0; 
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .header {
             text-align: center;
-            background-color: black;
-            color: #FFFFFF;
-            width: 300px;
-            padding: 5px;
-            border-radius: 35px;
+            margin-top: 0; 
+            margin-bottom: 20px;
+            padding-top: 5px;
         }
 
-        h1 {
-            font-family: 'HRC', sans-serif;
-            font-size: 45px;
-            letter-spacing: 1.2px;
-            color: #F27C00;
+        .header h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            letter-spacing: 2px;
+            color: var(--color-primary-orange);
             margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .description {
-            font-size: 13px;
-            color: #F3EBDD;
+        .header .description {
+            font-size: 14px;
+            color: var(--color-medium-grey);
             margin-bottom: 15px;
+            line-height: 1.4;
         }
 
-        h2 {
-            font-size: 16px;
-            color: #E25700;
+        .section-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-card h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            color: var(--color-dark-charcoal);
             text-align: left;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-card h2 i {
+            font-size: 20px;
+            color: var(--color-primary-orange);
+        }
+
+        .placeholder-content {
+            font-size: 14px;
+            color: var(--color-medium-grey);
+            text-align: center;
+            padding: 10px 0;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            background-color: #f8fafc;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--color-medium-grey);
+        }
+
+        .footer a {
+            color: var(--color-primary-orange);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 
-<body>
-    <div class="container">
-        <h1>FOXISYNC</h1>
-        <p class="description">Enhance your browsing with sound effects</p>
+<body class="antialiased">
+    <div class="container mx-auto">
+        <header class="header">
+            <h1>FOXISYNC</h1>
+            <p class="description">
+                Make your browsing way cooler with awesome sound effects and themes you can actually change!
+                Every click, every new tab, every download? It's gonna sound epic.
+            </p>
+        </header>
 
-        <h2 class="volume-heading">Volume Area</h2>
+        <section class="section-card">
+            <h2><i class='bx bxs-info-circle'></i> About Foxisync</h2>
+            <div class="text-left text-sm" style="color: var(--color-dark-text);">
+                <p class="mb-2">
+                    Foxisync is here to level up your browser experience! There are custom sound effects for
+                    pretty much everything you do in your browser, plus a ton of awesome themes.
+                    Enjoy the experience!
+                </p>
+                <p class="mb-2">
+                    Current Version: <span class="font-semibold">2.0</span>
+                </p>
+                <p class="mb-2 flex items-center gap-2">
+                    Made by: <span class="font-semibold">Diptanu Saha</span>
+                    <a href="https://github.com/Diptanu-Saha" target="_blank" class="text-blue-600 hover:underline flex items-center gap-1">
+                        <i class='bx bxl-github text-lg'></i> GitHub
+                    </a>
+                </p>
+                <p>
+                    Thanks for checking out Foxisync! We're always working on new stuff
+                    to make your browsing even more legendary.
+                </p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2025 Foxisync. Made With Love & Enjoyment.</p>
+        </footer>
+    </div>
 </body>
 
 </html>

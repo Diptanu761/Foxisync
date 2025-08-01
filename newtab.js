@@ -514,7 +514,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "Valley Of The End": "sounds/naruto_sounds/",
         "Obito Uchiha": "sounds/naruto_sounds/",
         "Itachi & Kisame": "sounds/naruto_sounds/",
-        "Itachi Uchiha": "sounds/naruto_sounds/"
+        "Itachi Uchiha": "sounds/naruto_sounds/",
+        "Madara Uchiha": "sounds/naruto_sounds/"
     };
 
     function updateSelectedThemeDisplay(themeName, previewSrc, videoSrc, musicSrc) {
