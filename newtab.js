@@ -431,12 +431,12 @@ document.addEventListener("DOMContentLoaded", () => {
             backgroundMusic.play().catch(e => {
                 console.warn("Music autoplay blocked or failed:", e);
             });
-            musicIcon.classList.remove('bx-music-alt');
-            musicIcon.classList.add('bx-music-alt', 'bx-spin');
+            musicIcon.classList.remove('bx-music');
+            musicIcon.classList.add('bx-music', 'bx-spin');
         } else if (backgroundMusic) {
             backgroundMusic.pause();
-            musicIcon.classList.remove('bx-music-alt', 'bx-spin');
-            musicIcon.classList.add('bx-music-alt');
+            musicIcon.classList.remove('bx-music', 'bx-spin');
+            musicIcon.classList.add('bx-music');
         }
     }
 
@@ -493,7 +493,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Sasuke Uchiha", preview: "preview/sasuke.png", video: "wallpapers/sasuke.mp4", music: "sounds/sasuke_music.mp3" },
         { name: "Naruto & His Friends", preview: "preview/narandfriend.png", video: "wallpapers/narandfriend.mp4", music: "sounds/narandfriend_music.mp3" },
         { name: "Kakashi Hatake", preview: "preview/kakashi.png", video: "wallpapers/kakashi.mp4", music: "sounds/kakashi_music.mp3" },
-        { name: "Itachi & Kisame", preview: "preview/itachi_kisame.png", video: "wallpapers/itachi_kisame.mp4", music: "sounds/itachi_kisamemusic.mp3" },
+        { name: "Itachi & Kisame", preview: "preview/itachi_kisame.png", video: "wallpapers/itachi_kisame.mp4", music: "sounds/itachi_kisame_music.mp3" },
         { name: "Valley Of The End", preview: "preview/valley.png", video: "wallpapers/valley.mp4", music: "sounds/valley_music.mp3" },
         { name: "Obito Uchiha", preview: "preview/obito.png", video: "wallpapers/obito.mp4", music: "sounds/obito_music.mp3" },
         { name: "Itachi Uchiha", preview: "preview/itachi.png", video: "wallpapers/itachi.mp4", music: "sounds/itachi_music.mp3" },
